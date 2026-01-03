@@ -1,0 +1,36 @@
+<svg width="250" height="200" viewBox="0 0 250 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="botGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2f3bff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5a2bff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Robot head -->
+  <rect x="75" y="60" width="100" height="80" rx="20" fill="url(#botGrad)"/>
+  
+  <!-- Eyes -->
+  <circle cx="95" cy="85" r="8" fill="white"/>
+  <circle cx="155" cy="85" r="8" fill="white"/>
+  <circle cx="95" cy="85" r="4" fill="#2f3bff"/>
+  <circle cx="155" cy="85" r="4" fill="#2f3bff"/>
+  
+  <!-- Mouth -->
+  <rect x="110" y="110" width="30" height="8" rx="4" fill="white"/>
+  
+  <!-- Antenna -->
+  <line x1="125" y1="60" x2="125" y2="40" stroke="url(#botGrad)" stroke-width="3"/>
+  <circle cx="125" cy="35" r="5" fill="#10b981"/>
+  
+  <!-- Chat bubbles -->
+  <ellipse cx="60" cy="40" rx="25" ry="15" fill="#f3f4f6"/>
+  <text x="60" y="45" text-anchor="middle" fill="#374151" font-size="10">Hi!</text>
+  
+  <ellipse cx="190" cy="160" rx="30" ry="18" fill="#e5e7eb"/>
+  <text x="190" y="165" text-anchor="middle" fill="#374151" font-size="8">How can I help?</text>
+  
+  <!-- Floating elements -->
+  <circle cx="40" cy="100" r="3" fill="#10b981" opacity="0.6"/>
+  <circle cx="210" cy="80" r="2" fill="#f59e0b" opacity="0.7"/>
+  <circle cx="30" cy="150" r="2.5" fill="#ef4444" opacity="0.5"/>
+</svg>

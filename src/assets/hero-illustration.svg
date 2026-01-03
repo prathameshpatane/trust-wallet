@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="520" viewBox="0 0 800 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0" stop-color="#FFD1FF" />
+      <stop offset="1" stop-color="#BFD7FF" />
+    </linearGradient>
+  </defs>
+  <rect x="40" y="80" width="600" height="320" rx="12" fill="#E7F0FF" />
+  <rect x="72" y="110" width="536" height="200" rx="8" fill="#0B1220" />
+  <rect x="90" y="140" width="160" height="36" rx="8" fill="#FFFFFF" opacity="0.08" />
+  <rect x="260" y="140" width="240" height="36" rx="8" fill="#FFFFFF" opacity="0.05" />
+  <rect x="90" y="190" width="140" height="18" rx="6" fill="#61dafb" />
+  <rect x="240" y="190" width="220" height="18" rx="6" fill="#A78BFA" />
+  <circle cx="640" cy="320" r="92" fill="url(#g1)" opacity="0.9" />
+
+  <!-- small floating card -->
+  <rect x="430" y="40" width="200" height="120" rx="16" fill="#fff" stroke="#E6E9F2" />
+  <text x="460" y="80" font-family="sans-serif" font-size="20" fill="#111">$37.29</text>
+  <rect x="452" y="96" width="36" height="24" rx="6" fill="#0EA5A4" />
+  <rect x="492" y="96" width="36" height="24" rx="6" fill="#7C3AED" />
+
+  <!-- laptop base -->
+  <rect x="20" y="410" width="660" height="24" rx="6" fill="#111827" opacity="0.06" />
+
+</svg>

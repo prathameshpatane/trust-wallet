@@ -1,0 +1,27 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bugGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Shield background -->
+  <path d="M60 10 L90 25 L90 55 C90 75 75 90 60 95 C45 90 30 75 30 55 L30 25 Z" fill="url(#shieldGradient)"/>
+  
+  <!-- Bug icon -->
+  <ellipse cx="60" cy="45" rx="15" ry="10" fill="url(#bugGradient)"/>
+  <circle cx="55" cy="42" r="2" fill="white"/>
+  <circle cx="65" cy="42" r="2" fill="white"/>
+  
+  <!-- Antennae -->
+  <line x1="52" y1="38" x2="48" y2="32" stroke="url(#bugGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="68" y1="38" x2="72" y2="32" stroke="url(#bugGradient)" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Dollar sign -->
+  <text x="60" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffd700">$</text>
+</svg>

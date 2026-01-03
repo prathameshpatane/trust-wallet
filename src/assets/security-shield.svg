@@ -1,0 +1,25 @@
+<svg width="200" height="240" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main shield -->
+  <path d="M100 20 L60 40 L60 120 Q60 180 100 220 Q140 180 140 120 L140 40 Z" fill="url(#shieldGrad)"/>
+  
+  <!-- Inner shield -->
+  <path d="M100 35 L75 50 L75 110 Q75 155 100 185 Q125 155 125 110 L125 50 Z" fill="white" opacity="0.2"/>
+  
+  <!-- Lock icon -->
+  <rect x="85" y="90" width="30" height="25" rx="3" fill="white"/>
+  <path d="M90 90 L90 80 Q90 70 100 70 Q110 70 110 80 L110 90" stroke="white" stroke-width="3" fill="none"/>
+  <circle cx="100" cy="102" r="3" fill="url(#shieldGrad)"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="50" cy="60" r="4" fill="#10b981" opacity="0.3"/>
+  <circle cx="150" cy="80" r="3" fill="#10b981" opacity="0.4"/>
+  <circle cx="40" cy="140" r="2" fill="#10b981" opacity="0.5"/>
+  <circle cx="160" cy="160" r="3" fill="#10b981" opacity="0.3"/>
+</svg>
