@@ -3,9 +3,16 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Home from './Home'
 import About from './About'
+import Staking from './Staking'
 import Download from './Download'
 import Swaps from './Swaps'
 import Support from './Support'
+import NFTs from './NFTs'
+import BuyCrypto from './BuyCrypto'
+import Login from './Login'
+import Signup from './Signup'
+import Dashboard from './Dashboard'
+import Buy from './Buy'
 
 function App() {
   const [isDark, setIsDark] = useState(false)
@@ -14,6 +21,7 @@ function App() {
   const [showWalletDropdown, setShowWalletDropdown] = useState(false)
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState('English')
+
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
@@ -73,17 +81,19 @@ function App() {
                     <div className="dropdown-item">
                       <div className="dropdown-icon">📈</div>
                       <div>
-                        <h4>Staking</h4>
-                        <p>Earn crypto rewards while securing networks</p>
+                        <Link to="/staking" style={{textDecoration:'none',color:'inherit'}}>
+                          <h4>Staking</h4>
+                          <p>Earn crypto rewards while securing networks</p>
+                        </Link>
                       </div>
                     </div>
-                    <div className="dropdown-item">
+                    <Link to="/nfts" className="dropdown-item">
                       <div className="dropdown-icon">🎨</div>
                       <div>
                         <h4>NFTs</h4>
                         <p>Explore the world of NFTs</p>
                       </div>
-                    </div>
+                    </Link>
                     <div className="dropdown-item">
                       <div className="dropdown-icon">🔒</div>
                       <div>
@@ -91,13 +101,13 @@ function App() {
                         <p>Learn how we keep your assets & Web3 journey safe</p>
                       </div>
                     </div>
-                    <div className="dropdown-item">
+                    <Link to="/buy-crypto" className="dropdown-item">
                       <div className="dropdown-icon">💳</div>
                       <div>
                         <h4>Buy Crypto</h4>
                         <p>Buy crypto in under five minutes</p>
                       </div>
-                    </div>
+                    </Link>
                     <div className="dropdown-item">
                       <div className="dropdown-icon">🛡️</div>
                       <div>
@@ -109,6 +119,7 @@ function App() {
                 )}
               </div>
               <a href="#">Build</a>
+              <Link to="/dashboard">Dashboard</Link>
               <div className="nav-dropdown" onMouseEnter={() => setShowSupportDropdown(true)} onMouseLeave={() => setShowSupportDropdown(false)}>
                 <a href="#">Support</a>
                 {showSupportDropdown && (
@@ -141,6 +152,8 @@ function App() {
             </nav>
 
             <div className="header-actions">
+              <Link to="/login" className="btn ghost">Login</Link>
+              <Link to="/signup" className="btn primary">Sign Up</Link>
               <button className="btn ghost" onClick={() => setIsDark(!isDark)}>
                 {isDark ? '☀️' : '🌙'}
               </button>
@@ -204,12 +217,21 @@ function App() {
           </div>
         </header>
 
+
+
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/staking" element={<Staking />} />
           <Route path="/download" element={<Download />} />
           <Route path="/swaps" element={<Swaps />} />
           <Route path="/support" element={<Support />} />
+          <Route path="/nfts" element={<NFTs />} />
+          <Route path="/buy-crypto" element={<BuyCrypto />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/buy" element={<Buy />} />
         </Routes>
 
         <footer className="site-footer">
