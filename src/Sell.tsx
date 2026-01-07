@@ -10,16 +10,7 @@ import {
   TokenBNB,
   TokenSOL,
   TokenADA,
-  TokenDOGE,
-  TokenMATIC,
-  TokenAVAX,
-  TokenLINK,
-  TokenLTC,
-  TokenUNI,
-  TokenATOM,
-  TokenDOT,
-  TokenBCH,
-  TokenBSV
+  
 } from '@web3icons/react'
 
 interface CryptoBalance {
