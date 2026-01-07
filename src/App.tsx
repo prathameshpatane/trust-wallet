@@ -1,6 +1,6 @@
 import './App.css'
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import Home from './Home'
 import About from './About'
 import Staking from './Staking'
@@ -13,24 +13,27 @@ import Login from './Login'
 import Signup from './Signup'
 import Dashboard from './Dashboard'
 import Buy from './Buy'
+import Sell from './Sell'
 
-function App() {
+function AppContent() {
   const [isDark, setIsDark] = useState(false)
   const [showFeaturesDropdown, setShowFeaturesDropdown] = useState(false)
   const [showSupportDropdown, setShowSupportDropdown] = useState(false)
   const [showWalletDropdown, setShowWalletDropdown] = useState(false)
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState('English')
-
+  const location = useLocation()
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
   }, [isDark])
 
+  // Hide header and footer for specific pages
+  const hideHeaderFooter = ['/buy', '/sell', '/login', '/signup', '/dashboard'].includes(location.pathname)
+
   return (
-    <Router>
-      <div className="page-root">
-        <header className="site-header">
+    <div className="page-root">
+        {!hideHeaderFooter && <header className="site-header">
           <div className="header-inner">
             <Link to="/" className="brand">
               <div className="shield" aria-hidden>🔷</div>
@@ -215,7 +218,7 @@ function App() {
               <button className="btn primary">Download</button>
             </div>
           </div>
-        </header>
+        </header>}
 
 
 
@@ -232,9 +235,10 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/buy" element={<Buy />} />
+          <Route path="/sell" element={<Sell />} />
         </Routes>
 
-        <footer className="site-footer">
+        {!hideHeaderFooter && <footer className="site-footer">
           <div className="footer-inner">
             <div className="footer-grid">
               <div className="footer-col">
@@ -276,8 +280,15 @@ function App() {
               </div>
             </div>
           </div>
-        </footer>
+        </footer>}
       </div>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   )
 }

@@ -12,6 +12,10 @@ function Login() {
   return (
     <div className="auth-page">
       <div className="auth-container">
+         <p className="trust-text">
+    TRUST
+    </p>
+
         <h2>Login</h2>
         <form className="auth-form" onSubmit={handleSubmit}>
           <input type="email" placeholder="Email" required />

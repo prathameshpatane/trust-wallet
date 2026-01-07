@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { useLanguage } from '../contexts/LanguageContext'
 
 const LanguageSelector: React.FC = () => {
-  const { language, setLanguage } = useLanguage()
+  const [language, setLanguage] = useState('en')
   const [isOpen, setIsOpen] = useState(false)
 
   const languages = [
@@ -31,7 +30,7 @@ const LanguageSelector: React.FC = () => {
               key={lang.code}
               className={`language-option ${language === lang.code ? 'active' : ''}`}
               onClick={() => {
-                setLanguage(lang.code as any)
+                setLanguage(lang.code)
                 setIsOpen(false)
               }}
             >

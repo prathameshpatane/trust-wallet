@@ -602,6 +602,20 @@ body{
 .buy-crypto-features .feature-card:hover .feature-icon {
   transform: scale(1.1);
 }
+.trust-text {
+  font-size: 34px;
+  text-align: center;
+  color: rgba(0, 0, 245, 0.6); /* soft color */
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+
+  /* blur effect */
+  filter: blur(0.6px);
+
+  /* optional glow for premium look */
+
+}
+
 
 .buy-crypto-features .feature-card h3 {
   font-size: 20px;
