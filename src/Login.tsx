@@ -6,7 +6,7 @@ function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Add login logic here
-    navigate('/')
+    navigate('/dashboard')
   }
 
   return (

@@ -9,13 +9,12 @@ function Dashboard() {
       </div>
       
       <div className="dashboard-features">
-        <div className="feature-card">
+        <Link to="/buy" className="feature-card feature-link">
           <div className="feature-icon">💳</div>
           <h3>Buy</h3>
           <p>Buy crypto in under five minutes</p>
-          <Link to="/buy" className="feature-btn">Buy</Link>
-          
-        </div>
+          <div className="feature-btn">Buy</div>
+        </Link>
         
         <div className="feature-card">
           <div className="feature-icon">🔄</div>
