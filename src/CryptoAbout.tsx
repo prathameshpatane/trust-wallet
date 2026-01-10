@@ -59,7 +59,7 @@ function CryptoAbout() {
             </tr>
           </thead>
           <tbody>
-            {cryptoData.map((crypto, index) => (
+            {cryptoData.map((crypto) => (
               <tr key={crypto.symbol} style={{ borderBottom: '1px solid #eee' }}>
                 <td style={{ padding: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <crypto.icon size={24} />
