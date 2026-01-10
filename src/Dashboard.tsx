@@ -3,6 +3,11 @@ import { Link } from 'react-router-dom'
 function Dashboard() {
   return (
     <div className="dashboard-page">
+      <nav className="dashboard-nav">
+        <Link to="/manage-crypto" className="nav-item">Manage Crypto</Link>
+        <Link to="/watchlist" className="nav-item">Watchlists</Link>
+      </nav>
+      
       <div className="dashboard-hero">
         <h1>Buy and sell crypto</h1>
         <p>Go from cash to crypto in seconds.</p>
@@ -16,13 +21,12 @@ function Dashboard() {
           <div className="feature-btn">Buy</div>
         </Link>
         
-        <div className="feature-card">
+        <Link to="/receive" className="feature-card feature-link">
           <div className="feature-icon">🔄</div>
-          <h3>Swap and bridge tokens</h3>
-          <p>Easily swap thousands of tokens across dozens of networks.</p>
-          <button className="feature-btn">Swap</button>
-          
-        </div>
+          <h3>Receive</h3>
+          <p>Transaction to be initiated and broadcast to the network.</p>
+          <div className="feature-btn">Receive</div>
+        </Link>
         
         <div className="feature-card">
           <div className="feature-icon">📈</div>

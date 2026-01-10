@@ -1,0 +1,41 @@
+.candle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 30px;
+  width: 8px;
+  margin: 0 auto;
+}
+
+.candle-wick {
+  width: 1px;
+  min-height: 1px;
+}
+
+.candle-body {
+  width: 6px;
+  min-height: 2px;
+}
+
+.candle-placeholder {
+  width: 8px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 12px;
+}
+
+.symbol {
+  font-weight: bold;
+  color: #666;
+}
+
+.positive {
+  color: #00d4aa;
+}
+
+.negative {
+  color: #ff6b6b;
+}

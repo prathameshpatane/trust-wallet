@@ -12,8 +12,14 @@ import BuyCrypto from './BuyCrypto'
 import Login from './Login'
 import Signup from './Signup'
 import Dashboard from './Dashboard'
+import ManageCrypto from './ManageCrypto'
+import CryptoAbout from './CryptoAbout'
 import Buy from './Buy'
 import Sell from './Sell'
+import Admin from './Admin'
+import AdminLogin from './AdminLogin'
+import Receive from './Receive'
+
 
 function AppContent() {
   const [isDark, setIsDark] = useState(false)
@@ -29,7 +35,7 @@ function AppContent() {
   }, [isDark])
 
   // Hide header and footer for specific pages
-  const hideHeaderFooter = ['/buy', '/sell', '/login', '/signup', '/dashboard'].includes(location.pathname)
+  const hideHeaderFooter = ['/buy', '/sell', '/login', '/signup', '/dashboard', '/manage-crypto/about', '/admin', '/admin/login', '/receive', '/watchlist'].includes(location.pathname)
 
   return (
     <div className="page-root">
@@ -234,8 +240,14 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/manage-crypto" element={<ManageCrypto />} />
+          <Route path="/manage-crypto/about" element={<CryptoAbout />} />
           <Route path="/buy" element={<Buy />} />
           <Route path="/sell" element={<Sell />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/receive" element={<Receive />} />
+      
         </Routes>
 
         {!hideHeaderFooter && <footer className="site-footer">
