@@ -19,6 +19,7 @@ import Sell from './Sell'
 import Admin from './Admin'
 import AdminLogin from './AdminLogin'
 import Receive from './Receive'
+import Watchlist from './Watchlist'
 
 
 function AppContent() {
@@ -247,6 +248,7 @@ function AppContent() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/receive" element={<Receive />} />
+          <Route path="/watchlist" element={<Watchlist />} />
       
         </Routes>
 
