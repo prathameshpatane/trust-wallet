@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import type { ElementType } from 'react'
 import './Buy.css'
 
@@ -31,7 +31,22 @@ interface CryptoOption {
 
 function Buy() {
   const [amount, setAmount] = useState('4,515')
-  const [selectedCrypto, setSelectedCrypto] = useState('ETH')
+  const [selectedCrypto, setSelectedCrypto] = useState<string>('ETH')
+  const [selectedInfo, setSelectedInfo] = useState<any>(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const sel = localStorage.getItem('selectedCrypto')
+    if (sel) {
+      try {
+        const parsed = JSON.parse(sel)
+        setSelectedInfo(parsed)
+        if (parsed.symbol) setSelectedCrypto(parsed.symbol)
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, [])
 
   const cryptoOptions: CryptoOption[] = [
     { symbol: 'ETH', name: 'Ethereum', network: 'Ethereum Mainnet', icon: TokenETH },
@@ -115,9 +130,9 @@ function Buy() {
             </select>
 
             <div className="crypto-info">
-              {currentCrypto && <currentCrypto.icon size={24} />}
-              <span>{currentCrypto?.name}</span>
-              <small>{currentCrypto?.network}</small>
+                {currentCrypto && <currentCrypto.icon size={24} />}
+                <span>{currentCrypto?.name || selectedInfo?.name}</span>
+                <small>{currentCrypto?.network}</small>
             </div>
           </div>
         </div>
@@ -131,7 +146,39 @@ function Buy() {
           <span>💳</span>
         </div>
 
-        <button className="connect-wallet-btn">
+        <button className="connect-wallet-btn" onClick={() => {
+          // parse USD amount
+          const raw = amount.toString().replace(/[$,]/g, '')
+          const usd = parseFloat(raw) || 0
+
+          // find current price
+          const storedHoldings = localStorage.getItem('holdings')
+          let holdings = [] as any[]
+          if (storedHoldings) {
+            try { holdings = JSON.parse(storedHoldings) } catch (e) { holdings = [] }
+          }
+
+          // find the crypto entry in holdings; fall back to selectedInfo.currentPrice
+          const symbol = selectedCrypto
+          const entryIndex = holdings.findIndex(h => h.symbol === symbol)
+          const price = (entryIndex >= 0 && holdings[entryIndex].currentPrice) || selectedInfo?.currentPrice || 0
+
+          // compute coins bought
+          const coins = price > 0 ? usd / price : 0
+
+          if (entryIndex >= 0) {
+            holdings[entryIndex].amountHeld = (parseFloat(holdings[entryIndex].amountHeld) || 0) + coins
+          } else {
+            // push a new entry with minimal fields
+            holdings.push({ name: selectedInfo?.name || currentCrypto?.name || symbol, symbol, icon: currentCrypto?.icon, amountHeld: coins, currentPrice: price, change24h: 0, profitLoss: 0 })
+          }
+
+          localStorage.setItem('holdings', JSON.stringify(holdings))
+          // clear selectedCrypto marker
+          localStorage.removeItem('selectedCrypto')
+          // navigate back to manage-crypto to see updated values
+          navigate('/manage-crypto')
+        }}>
           Buy
         </button>
       </div>

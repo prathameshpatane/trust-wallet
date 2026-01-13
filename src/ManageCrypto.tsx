@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   TokenETH,
   TokenBTC,
@@ -27,10 +27,10 @@ function ManageCrypto() {
   const [activeTab, setActiveTab] = useState('holdings')
   const location = useLocation()
 
-  const holdings: CryptoHolding[] = [
+  const defaultHoldings: CryptoHolding[] = [
     { name: 'Bitcoin', symbol: 'BTC', icon: TokenBTC, amountHeld: 0.5, currentPrice: 94250, change24h: 2.5, profitLoss: 1200 },
     { name: 'Ethereum', symbol: 'ETH', icon: TokenETH, amountHeld: 2.3, currentPrice: 3420, change24h: -1.2, profitLoss: -150 },
-    { name: 'Tether', symbol: 'USDT', icon: TokenUSDT, amountHeld: 1000, currentPrice: 1.00, change24h: 0.1, profitLoss: 5 },
+    { name: 'Tether', symbol: 'USDT', icon: TokenUSDT, amountHeld: 1000, currentPrice: 1.0, change24h: 0.1, profitLoss: 5 },
     { name: 'Binance Coin', symbol: 'BNB', icon: TokenBNB, amountHeld: 5, currentPrice: 720, change24h: 3.8, profitLoss: 180 },
     { name: 'Solana', symbol: 'SOL', icon: TokenSOL, amountHeld: 15, currentPrice: 245, change24h: -2.1, profitLoss: -75 },
     { name: 'Cardano', symbol: 'ADA', icon: TokenADA, amountHeld: 500, currentPrice: 1.15, change24h: 1.8, profitLoss: 25 },
@@ -39,6 +39,42 @@ function ManageCrypto() {
     { name: 'Avalanche', symbol: 'AVAX', icon: TokenAVAX, amountHeld: 25, currentPrice: 52, change24h: 4.1, profitLoss: 65 },
     { name: 'Chainlink', symbol: 'LINK', icon: TokenLINK, amountHeld: 100, currentPrice: 28.5, change24h: -1.5, profitLoss: -30 }
   ]
+
+  const [holdingsState, setHoldingsState] = useState<CryptoHolding[]>(defaultHoldings)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const stored = localStorage.getItem('holdings')
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored) as CryptoHolding[]
+        const withIcons = parsed.map(item => {
+          let icon: React.ComponentType<{ size?: number }> = TokenBTC
+          switch (item.symbol) {
+            case 'ETH': icon = TokenETH; break
+            case 'BTC': icon = TokenBTC; break
+            case 'USDT': icon = TokenUSDT; break
+            case 'BNB': icon = TokenBNB; break
+            case 'SOL': icon = TokenSOL; break
+            case 'ADA': icon = TokenADA; break
+            case 'DOGE': icon = TokenDOGE; break
+            case 'MATIC': icon = TokenMATIC; break
+            case 'AVAX': icon = TokenAVAX; break
+            case 'LINK': icon = TokenLINK; break
+            default: icon = TokenBTC
+          }
+          return { ...item, icon }
+        })
+        setHoldingsState(withIcons)
+      } catch (e) {
+        setHoldingsState(defaultHoldings)
+      }
+    } else {
+      // persist defaults on first load
+      localStorage.setItem('holdings', JSON.stringify(defaultHoldings))
+      setHoldingsState(defaultHoldings)
+    }
+  }, [])
 
   const renderContent = () => {
     switch (activeTab) {
@@ -61,7 +97,7 @@ function ManageCrypto() {
                   </tr>
                 </thead>
                 <tbody>
-                  {holdings.map((crypto) => {
+                  {holdingsState.map((crypto) => {
                     const totalValue = crypto.amountHeld * crypto.currentPrice
                     const isGainer = crypto.change24h > 0
                     const isProfitable = crypto.profitLoss > 0
@@ -106,7 +142,21 @@ function ManageCrypto() {
                         </td>
                         <td style={{ padding: '12px' }}>
                           <div style={{ display: 'flex', gap: '8px' }}>
-                            <Link to="/buy" style={{
+                            <button onClick={() => {
+                              const selected = {
+                                symbol: crypto.symbol,
+                                name: crypto.name,
+                                currentPrice: crypto.currentPrice,
+                                amountHeld: 0
+                              }
+                              localStorage.setItem('selectedCrypto', JSON.stringify(selected))
+                              // ensure holdings entry exists in storage (we keep persistent holdings)
+                              const stored = localStorage.getItem('holdings')
+                              if (!stored) {
+                                localStorage.setItem('holdings', JSON.stringify(holdingsState))
+                              }
+                              navigate('/buy')
+                            }} style={{
                               padding: '4px 8px',
                               fontSize: '12px',
                               border: '1px solid #22c55e',
@@ -118,7 +168,7 @@ function ManageCrypto() {
                               display: 'inline-block'
                             }}>
                               Buy
-                            </Link>
+                            </button>
                             <Link to="/sell" style={{
                               padding: '4px 8px',
                               fontSize: '12px',
