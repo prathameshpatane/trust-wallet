@@ -1,213 +1,300 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { db } from './firebase'
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore"
+import { db } from "./firebase"
 
 interface User {
   id: string
+  uid: string
+  fullName: string
   email: string
-  name: string
-  mobile?: string
-  createdAt: any
+  role: string
+  accountStatus: string
+  emailVerified: boolean
+  createdAt: string
+  lastLogin: string
   wallet?: { [key: string]: number }
 }
 
-interface SendCoinForm {
+interface CoinAction {
   userId: string
   coin: string
-  amount: string
-  operation: 'add' | 'deduct'
-  isOpen: boolean
+  amount: number
+  action: 'add' | 'deduct'
 }
 
 function Admin() {
   const navigate = useNavigate()
   const [users, setUsers] = useState<User[]>([])
-  const [sendCoinForm, setSendCoinForm] = useState<SendCoinForm>({
-    userId: '',
-    coin: '',
-    amount: '',
-    operation: 'add',
-    isOpen: false
-  })
-  const [activeTab, setActiveTab] = useState('customers')
+  const [coinAction, setCoinAction] = useState<CoinAction | null>(null)
 
+  // 🔐 Admin auth check (UNCHANGED)
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('adminAuth')
+    const isAuthenticated = localStorage.getItem("adminAuth")
     if (!isAuthenticated) {
-      navigate('/admin/login')
+      navigate("/admin/login")
       return
     }
     fetchUsers()
   }, [navigate])
 
+  // 🔥 FETCH USERS FROM FIRESTORE
   const fetchUsers = async () => {
-    // Always show sample users without Firebase dependency
-    const sampleUsers: User[] = [
-      { id: 'mknsHlzkWLZNkOdel5FrJes5Tjy1', name: 'Aku', email: 'aku@gmail.com', mobile: '+1-555-0123', wallet: { BTC: 0.5, ETH: 2.3, USDT: 500 }, createdAt: { toDate: () => new Date('2026-01-06') } },
-      { id: 'GS6smRHW9rVnim42H7MPMqsx18f2', name: 'ABC User', email: 'abc@gmail.com', mobile: '+1-555-0456', wallet: { USDT: 1000, BNB: 5.2, SOL: 8.5 }, createdAt: { toDate: () => new Date('2026-01-06') } },
-      { id: 'sample3', name: 'Shreya Nalawade', email: 'shreyanalawade882@gmail.com', mobile: '+1-555-0789', wallet: { SOL: 15.8, ADA: 500, BTC: 0.25 }, createdAt: { toDate: () => new Date('2026-01-06') } },
-      { id: 'sample4', name: 'John Doe', email: 'john.doe@example.com', mobile: '+1-555-1234', wallet: { BTC: 1.2, ETH: 5.7, DOGE: 10000 }, createdAt: { toDate: () => new Date('2026-01-05') } },
-      { id: 'sample5', name: 'Jane Smith', email: 'jane.smith@example.com', mobile: '+1-555-5678', wallet: { USDT: 2500, BNB: 12.3, TRX: 50000 }, createdAt: { toDate: () => new Date('2026-01-04') } },
-      { id: 'sample6', name: 'Mike Johnson', email: 'mike.j@example.com', mobile: '+1-555-9012', wallet: { ETH: 3.4, SOL: 25.6, XRP: 1500 }, createdAt: { toDate: () => new Date('2026-01-03') } },
-      { id: 'sample7', name: 'Sarah Wilson', email: 'sarah.w@example.com', mobile: '+1-555-3456', wallet: { BTC: 0.8, USDT: 750, ADA: 800 }, createdAt: { toDate: () => new Date('2026-01-02') } },
-      { id: 'sample8', name: 'David Brown', email: 'david.brown@example.com', mobile: '+1-555-7890', wallet: { DOGE: 25000, TRX: 75000, BNB: 3.2 }, createdAt: { toDate: () => new Date('2026-01-01') } }
-    ]
-    
-    setUsers(sampleUsers)
-  }
-
-  const sendCoinsToUser = async () => {
-    if (!sendCoinForm.userId || !sendCoinForm.coin || !sendCoinForm.amount) {
-      alert('Please fill all fields')
-      return
-    }
-
     try {
-      const userRef = db.collection('users').doc(sendCoinForm.userId)
-      const userDoc = await userRef.get()
-      
-      if (userDoc.exists) {
-        const userData = userDoc.data()
-        const currentWallet = userData?.wallet || {}
-        const currentAmount = currentWallet[sendCoinForm.coin] || 0
-        const changeAmount = parseFloat(sendCoinForm.amount)
-        
-        let newAmount
-        if (sendCoinForm.operation === 'add') {
-          newAmount = currentAmount + changeAmount
-        } else {
-          newAmount = Math.max(0, currentAmount - changeAmount)
-        }
-        
-        await userRef.update({
-          [`wallet.${sendCoinForm.coin}`]: newAmount
-        })
-        
-        setSendCoinForm({ userId: '', coin: '', amount: '', operation: 'add', isOpen: false })
-        fetchUsers()
-        alert(`Coins ${sendCoinForm.operation === 'add' ? 'added' : 'deducted'} successfully!`)
-      }
-    } catch (error) {
-      console.error('Error updating coins:', error)
-      alert('Error updating coins')
+      const snap = await getDocs(collection(db, "users"))
+      const list = snap.docs.map(docSnap => ({
+        id: docSnap.id,
+        ...(docSnap.data() as Omit<User, "id">)
+      }))
+      setUsers(list)
+    } catch (err) {
+      console.error("Error fetching users:", err)
     }
-  }
-
-  const getTotalBalance = (wallet: { [key: string]: number } = {}) => {
-    return Object.values(wallet).reduce((total, amount) => total + (amount * 50000), 0).toFixed(2)
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('adminAuth')
-    navigate('/admin/login')
+    localStorage.removeItem("adminAuth")
+    navigate("/admin/login")
+  }
+
+  const openCoinAction = (userId: string, action: 'add' | 'deduct') => {
+    setCoinAction({ userId, coin: 'BTC', amount: 0, action })
+  }
+
+  const saveCoinAction = async () => {
+    if (!coinAction) return
+
+    try {
+      const user = users.find(u => u.id === coinAction.userId)
+      if (!user) return
+
+      const currentAmount = user.wallet?.[coinAction.coin] || 0
+      const newAmount = coinAction.action === 'add' 
+        ? currentAmount + coinAction.amount
+        : Math.max(0, currentAmount - coinAction.amount)
+
+      await updateDoc(doc(db, "users", coinAction.userId), {
+        [`wallet.${coinAction.coin}`]: newAmount
+      })
+
+      setCoinAction(null)
+      fetchUsers()
+      alert(`Successfully ${coinAction.action === 'add' ? 'added' : 'deducted'} ${coinAction.amount} ${coinAction.coin}`)
+    } catch (err) {
+      console.error(err)
+      alert("Failed to update wallet")
+    }
   }
 
   return (
     <div style={{ 
-      width: '100vw', 
-      height: '100vh', 
-      margin: 0, 
-      padding: 0, 
-      backgroundColor: '#f5f5f5',
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: '#f8f9fa',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      margin: 0,
+      padding: 0,
       overflow: 'auto'
     }}>
+      {/* HEADER */}
       <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
         padding: '20px 40px',
-        backgroundColor: 'white',
-        borderBottom: '1px solid #dee2e6'
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
       }}>
-        <h1 style={{ margin: 0 }}>Admin Panel</h1>
-        <button onClick={handleLogout} style={{ 
-          padding: '10px 20px', 
-          backgroundColor: '#dc3545', 
-          color: 'white', 
-          border: 'none', 
-          borderRadius: '5px', 
-          cursor: 'pointer' 
-        }}>
-          Logout
-        </button>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: 'center' }}>
+          <h1 style={{ margin: 0, fontSize: '2rem', fontWeight: '700' }}>Admin Panel</h1>
+          <button 
+            onClick={handleLogout}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              color: 'white',
+              border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: '500',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={(e) => (e.target as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.3)'}
+            onMouseOut={(e) => (e.target as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.2)'}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      <div style={{ padding: '20px 40px' }}>
-        <button 
-          onClick={() => setActiveTab('customers')} 
-          style={{ 
-            padding: '10px 20px', 
-            backgroundColor: activeTab === 'customers' ? '#007bff' : '#6c757d', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '5px', 
-            cursor: 'pointer' 
-          }}
-        >
-          All Customers ({users.length})
-        </button>
-      </div>
-
-      {activeTab === 'customers' && (
-        <div style={{ 
-          margin: '0 40px 40px 40px', 
-          backgroundColor: 'white', 
-          borderRadius: '8px', 
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      <div style={{ padding: '40px' }}>
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
           overflow: 'hidden'
         }}>
-          <div style={{ padding: '20px', borderBottom: '1px solid #dee2e6' }}>
-            <h2 style={{ margin: 0 }}>All Customers</h2>
+          <div style={{
+            padding: '24px 32px',
+            borderBottom: '1px solid #e9ecef',
+            backgroundColor: '#fff'
+          }}>
+            <h2 style={{ margin: 0, color: '#2c3e50', fontSize: '1.5rem' }}>Users ({users.length})</h2>
           </div>
+
+          {/* USERS TABLE */}
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
+            <table style={{ 
+              width: '100%', 
+              borderCollapse: 'collapse',
+              backgroundColor: 'white'
+            }}>
               <thead>
                 <tr style={{ backgroundColor: '#f8f9fa' }}>
-                  <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid #dee2e6', fontWeight: '600' }}>Name</th>
-                  <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid #dee2e6', fontWeight: '600' }}>Email</th>
-                  <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid #dee2e6', fontWeight: '600' }}>Mobile</th>
-                  <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid #dee2e6', fontWeight: '600' }}>Balance</th>
-                  <th style={{ padding: '15px', textAlign: 'left', borderBottom: '2px solid #dee2e6', fontWeight: '600' }}>Joined</th>
-                  <th style={{ padding: '15px', textAlign: 'center', borderBottom: '2px solid #dee2e6', fontWeight: '600' }}>Actions</th>
+                  <th style={{
+                    padding: '16px 24px',
+                    textAlign: 'left',
+                    fontWeight: '600',
+                    color: '#495057',
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    borderBottom: '2px solid #dee2e6'
+                  }}>Name</th>
+                  <th style={{
+                    padding: '16px 24px',
+                    textAlign: 'left',
+                    fontWeight: '600',
+                    color: '#495057',
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    borderBottom: '2px solid #dee2e6'
+                  }}>Email</th>
+                  <th style={{
+                    padding: '16px 24px',
+                    textAlign: 'left',
+                    fontWeight: '600',
+                    color: '#495057',
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    borderBottom: '2px solid #dee2e6'
+                  }}>Role</th>
+                  <th style={{
+                    padding: '16px 24px',
+                    textAlign: 'left',
+                    fontWeight: '600',
+                    color: '#495057',
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    borderBottom: '2px solid #dee2e6'
+                  }}>Status</th>
+                  <th style={{
+                    padding: '16px 24px',
+                    textAlign: 'left',
+                    fontWeight: '600',
+                    color: '#495057',
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    borderBottom: '2px solid #dee2e6'
+                  }}>Joined</th>
+                  <th style={{
+                    padding: '16px 24px',
+                    textAlign: 'center',
+                    fontWeight: '600',
+                    color: '#495057',
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    borderBottom: '2px solid #dee2e6'
+                  }}>Actions</th>
                 </tr>
               </thead>
+
               <tbody>
-                {users.map(user => (
-                  <tr key={user.id} style={{ borderBottom: '1px solid #dee2e6' }}>
-                    <td style={{ padding: '15px', fontWeight: '500' }}>{user.name || 'N/A'}</td>
-                    <td style={{ padding: '15px' }}>{user.email}</td>
-                    <td style={{ padding: '15px' }}>{user.mobile || 'N/A'}</td>
-                    <td style={{ padding: '15px' }}>
-                      <div style={{ fontWeight: '600', color: '#28a745' }}>${getTotalBalance(user.wallet)}</div>
-                      {user.wallet && Object.keys(user.wallet).length > 0 && (
-                        <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                          {Object.entries(user.wallet).map(([coin, amount]) => (
-                            <div key={coin} style={{ marginBottom: '2px' }}>
-                              <span style={{ fontWeight: '500' }}>{coin}:</span> {amount}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                {users.map((user, index) => (
+                  <tr key={user.id} style={{
+                    borderBottom: '1px solid #f1f3f4',
+                    backgroundColor: index % 2 === 0 ? '#fff' : '#fafbfc',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#fff' : '#fafbfc'}
+                  >
+                    <td style={{ 
+                      padding: '16px 24px',
+                      fontWeight: '500',
+                      color: '#2c3e50'
+                    }}>{user.fullName}</td>
+                    <td style={{ 
+                      padding: '16px 24px',
+                      color: '#6c757d'
+                    }}>{user.email}</td>
+                    <td style={{ padding: '16px 24px' }}>
+                      <span style={{
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        backgroundColor: user.role === 'admin' ? '#e3f2fd' : '#f3e5f5',
+                        color: user.role === 'admin' ? '#1976d2' : '#7b1fa2'
+                      }}>
+                        {user.role}
+                      </span>
                     </td>
-                    <td style={{ padding: '15px' }}>
-                      {user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'N/A'}
+                    <td style={{ padding: '16px 24px' }}>
+                      <span style={{
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        backgroundColor: user.accountStatus === 'active' ? '#d4edda' : '#f8d7da',
+                        color: user.accountStatus === 'active' ? '#155724' : '#721c24'
+                      }}>
+                        {user.accountStatus}
+                      </span>
                     </td>
-                    <td style={{ padding: '15px', textAlign: 'center' }}>
-                      <button 
-                        onClick={() => setSendCoinForm({ ...sendCoinForm, userId: user.id, operation: 'add', isOpen: true })}
-                        style={{ 
-                          padding: '8px 16px', 
-                          backgroundColor: '#28a745', 
-                          color: 'white', 
-                          border: 'none', 
-                          borderRadius: '4px', 
-                          cursor: 'pointer',
-                          fontSize: '14px',
-                          fontWeight: '500'
-                        }}
-                      >
-                        Manage Coins
-                      </button>
+                    <td style={{ 
+                      padding: '16px 24px',
+                      color: '#6c757d',
+                      fontSize: '0.875rem'
+                    }}>{new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td style={{ padding: '16px 24px', textAlign: 'center' }}>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                        <button 
+                          onClick={() => openCoinAction(user.id, 'add')}
+                          style={{
+                            padding: '6px 12px',
+                            backgroundColor: '#28a745',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.75rem',
+                            fontWeight: '500'
+                          }}
+                        >
+                          Add Coins
+                        </button>
+                        <button 
+                          onClick={() => openCoinAction(user.id, 'deduct')}
+                          style={{
+                            padding: '6px 12px',
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.75rem',
+                            fontWeight: '500'
+                          }}
+                        >
+                          Deduct Coins
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -215,131 +302,113 @@ function Admin() {
             </table>
           </div>
         </div>
-      )}
+      </div>
 
-      {sendCoinForm.isOpen && (
-        <div style={{ 
-          position: 'fixed', 
-          top: 0, 
-          left: 0, 
-          right: 0, 
-          bottom: 0, 
-          backgroundColor: 'rgba(0,0,0,0.5)', 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center',
+      {/* COIN ACTION MODAL */}
+      {coinAction && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.6)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           zIndex: 1000
         }}>
           <div style={{ 
-            backgroundColor: 'white', 
-            padding: '30px', 
-            borderRadius: '8px', 
+            background: "#fff", 
+            padding: '32px',
             width: '400px',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+            borderRadius: '16px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
           }}>
-            <h3 style={{ marginBottom: '20px' }}>Send Cryptocurrency</h3>
-            
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>User:</label>
-              <input 
-                type="text" 
-                value={users.find(u => u.id === sendCoinForm.userId)?.email || ''}
-                disabled
-                style={{ width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: '#f5f5f5' }}
-              />
-            </div>
-            
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Cryptocurrency:</label>
-              <select 
-                value={sendCoinForm.coin} 
-                onChange={(e) => setSendCoinForm({...sendCoinForm, coin: e.target.value})}
-                style={{ width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-              >
-                <option value="">Select cryptocurrency</option>
-                <option value="BTC">Bitcoin (BTC)</option>
-                <option value="ETH">Ethereum (ETH)</option>
-                <option value="USDT">Tether (USDT)</option>
-                <option value="BNB">Binance Coin (BNB)</option>
-                <option value="SOL">Solana (SOL)</option>
-                <option value="ADA">Cardano (ADA)</option>
-                <option value="DOGE">Dogecoin (DOGE)</option>
-                <option value="MATIC">Polygon (MATIC)</option>
-                <option value="AVAX">Avalanche (AVAX)</option>
-                <option value="LINK">Chainlink (LINK)</option>
-                <option value="LTC">Litecoin (LTC)</option>
-                <option value="UNI">Uniswap (UNI)</option>
-              </select>
-            </div>
-            
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Operation:</label>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                  <input 
-                    type="radio" 
-                    name="operation" 
-                    value="add" 
-                    checked={sendCoinForm.operation === 'add'}
-                    onChange={(e) => setSendCoinForm({...sendCoinForm, operation: e.target.value as 'add' | 'deduct'})}
-                    style={{ marginRight: '5px' }}
-                  />
-                  Add Coins
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                  <input 
-                    type="radio" 
-                    name="operation" 
-                    value="deduct" 
-                    checked={sendCoinForm.operation === 'deduct'}
-                    onChange={(e) => setSendCoinForm({...sendCoinForm, operation: e.target.value as 'add' | 'deduct'})}
-                    style={{ marginRight: '5px' }}
-                  />
-                  Deduct Coins
-                </label>
-              </div>
-            </div>
-            
+            <h3 style={{ 
+              margin: '0 0 24px 0',
+              color: '#2c3e50',
+              fontSize: '1.5rem',
+              fontWeight: '600'
+            }}>{coinAction.action === 'add' ? 'Add' : 'Deduct'} Coins</h3>
+
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Amount:</label>
-              <input 
-                type="number" 
-                step="0.00000001"
-                value={sendCoinForm.amount} 
-                onChange={(e) => setSendCoinForm({...sendCoinForm, amount: e.target.value})}
-                style={{ width: '100%', padding: '8px', border: '1px solid #ddd', borderRadius: '4px' }}
-                placeholder="Enter amount"
-              />
-            </div>
-            
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button 
-                onClick={sendCoinsToUser}
-                style={{ 
-                  flex: 1,
-                  padding: '10px', 
-                  backgroundColor: sendCoinForm.operation === 'add' ? '#28a745' : '#dc3545', 
-                  color: 'white', 
-                  border: 'none', 
-                  borderRadius: '5px', 
-                  cursor: 'pointer'
+              <label style={{ 
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: '500',
+                color: '#495057'
+              }}>Cryptocurrency</label>
+              <select
+                value={coinAction.coin}
+                onChange={e => setCoinAction({ ...coinAction, coin: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '2px solid #e9ecef',
+                  borderRadius: '8px',
+                  fontSize: '1rem',
+                  backgroundColor: 'white'
                 }}
               >
-                {sendCoinForm.operation === 'add' ? 'Add Coins' : 'Deduct Coins'}
-              </button>
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="BNB">Binance Coin (BNB)</option>
+                <option value="ADA">Cardano (ADA)</option>
+                <option value="SOL">Solana (SOL)</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ 
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: '500',
+                color: '#495057'
+              }}>Amount</label>
+              <input
+                type="number"
+                step="0.00000001"
+                min="0"
+                value={coinAction.amount}
+                onChange={e => setCoinAction({ ...coinAction, amount: parseFloat(e.target.value) || 0 })}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '2px solid #e9ecef',
+                  borderRadius: '8px',
+                  fontSize: '1rem'
+                }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
               <button 
-                onClick={() => setSendCoinForm({ userId: '', coin: '', amount: '', operation: 'add', isOpen: false })}
-                style={{ 
-                  flex: 1,
-                  padding: '10px', 
-                  backgroundColor: '#6c757d', 
-                  color: 'white', 
-                  border: 'none', 
-                  borderRadius: '5px', 
-                  cursor: 'pointer'
+                onClick={() => setCoinAction(null)}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: '#6c757d',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  fontWeight: '500'
                 }}
               >
                 Cancel
+              </button>
+              <button 
+                onClick={saveCoinAction}
+                style={{
+                  padding: '12px 24px',
+                  backgroundColor: coinAction.action === 'add' ? '#28a745' : '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  fontWeight: '500'
+                }}
+              >
+                {coinAction.action === 'add' ? 'Add' : 'Deduct'} Coins
               </button>
             </div>
           </div>

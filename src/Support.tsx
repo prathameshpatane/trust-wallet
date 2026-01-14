@@ -133,7 +133,7 @@ function Support() {
           <div className="topics-grid">
             <a href="#" className="topic-card">
               <div className="topic-icon">🚀</div>
-              <span>Getting started with Trust Wallet</span>
+              <span>Getting started with LockChain Wallet</span>
             </a>
             <a href="#" className="topic-card">
               <div className="topic-icon">💰</div>
@@ -167,7 +167,7 @@ function Support() {
             </div>
             <div className="program-text">
               <h2>Introducing the TWT Utility Program</h2>
-              <p>If you support Trust Wallet by holding at least 50 Locked TWT in your wallet, you get access to expedited replies on all your questions to our CS team and premium content on the support page.</p>
+              <p>If you support LockChain Wallet by holding at least 50 Locked TWT in your wallet, you get access to expedited replies on all your questions to our CS team and premium content on the support page.</p>
               <p className="program-highlight">Stay tuned for more, this is just the beginning</p>
               <button className="btn secondary blog-btn">
                 <span className="btn-icon">📖</span>
@@ -220,7 +220,7 @@ function Support() {
                 <img src={tokenListing} alt="Token Listing" className="contact-image" />
               </div>
               <h3>List a Token</h3>
-              <p>Submit your token for review and potential listing on Trust Wallet</p>
+              <p>Submit your token for review and potential listing on LockChain Wallet</p>
               <button className="btn secondary submit-btn">
                 <span className="btn-icon">🪙</span>
                 Submit Token
@@ -231,7 +231,7 @@ function Support() {
                 <img src={launchpool} alt="Launchpool" className="contact-image" />
               </div>
               <h3>Launchpool Listing</h3>
-              <p>Apply for featured placement in Trust Wallet's Launchpool program</p>
+              <p>Apply for featured placement in LockChain Wallet's Launchpool program</p>
               <button className="btn secondary apply-btn">
                 <span className="btn-icon">🚀</span>
                 Apply Now

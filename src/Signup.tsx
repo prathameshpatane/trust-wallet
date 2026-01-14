@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "./firebase.ts"; // adjust path if needed
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "./firebase";
 
 function Signup() {
   const navigate = useNavigate();
@@ -21,20 +22,45 @@ function Signup() {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
 
-      // Set display name
-      await updateProfile(userCredential.user, {
-        displayName: fullName,
-      });
+      if (userCredential && userCredential.user) {
+        await updateProfile(userCredential.user, { displayName: fullName })
 
-      navigate("/"); // redirect after signup
+        const now = new Date().toISOString()
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
+          uid: userCredential.user.uid,
+          fullName,
+          email,
+          role: 'user',
+          accountStatus: 'active',
+          emailVerified: false,
+          createdAt: now,
+          lastLogin: now,
+          wallet: {}
+        })
+
+        // Save to localStorage for admin panel
+        const newUser = {
+          uid: userCredential.user.uid,
+          fullName,
+          email,
+          role: 'user',
+          accountStatus: 'active',
+          emailVerified: false,
+          createdAt: now,
+          lastLogin: now,
+          wallet: {}
+        }
+        const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]')
+        existingUsers.push(newUser)
+        localStorage.setItem('registeredUsers', JSON.stringify(existingUsers))
+        console.log('User saved to localStorage:', newUser)
+      }
+
+      navigate("/login")
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message)
     }
   };
 

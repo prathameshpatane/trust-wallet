@@ -6,7 +6,7 @@ function Swaps() {
       <div className="swaps-hero">
         <div className="swaps-hero-content">
           <h1>Seamless swapping options</h1>
-          <p className="swaps-lead">Swap crypto directly from the Trust Wallet mobile app and browser extension.</p>
+          <p className="swaps-lead">Swap crypto directly from the LockChain Wallet mobile app and browser extension.</p>
           <button className="btn primary cta">Download Now</button>
         </div>
       </div>
@@ -91,13 +91,13 @@ function Swaps() {
           <h2>Frequently asked questions</h2>
           <div className="faq-list">
             <div className="faq-item">
-              <h4>Does Trust Wallet provide the swap service?</h4>
+              <h4>Does LockChain Wallet provide the swap service?</h4>
             </div>
             <div className="faq-item">
               <h4>Who do you partner with to provide swaps?</h4>
             </div>
             <div className="faq-item">
-              <h4>Does Trust Wallet charge a fee for swapping crypto?</h4>
+              <h4>Does LockChain Wallet charge a fee for swapping crypto?</h4>
             </div>
             <div className="faq-item">
               <h4>How are swap fees determined?</h4>
@@ -109,7 +109,7 @@ function Swaps() {
       <section className="final-cta">
         <div className="section-inner">
           <h2>Simple and convenient to use, seamless to explore</h2>
-          <button className="btn primary">Download Trust Wallet</button>
+          <button className="btn primary">Download LockChain Wallet</button>
         </div>
       </section>
     </div>

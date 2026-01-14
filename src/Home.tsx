@@ -23,7 +23,7 @@ function Home() {
 
       <section className="browser-support">
         <div className="section-inner">
-          <h2>The Trust Wallet Browser Extension works on…</h2>
+          <h2>The LockChain Wallet Browser Extension works on…</h2>
           <div className="browsers">
             <div className="browser-item">
               <div className="browser-icon">🌐</div>
@@ -95,7 +95,7 @@ function Home() {
 
       <section className="about-section">
         <div className="section-inner">
-          <h2>Why Trust Wallet?</h2>
+          <h2>Why LockChain Wallet?</h2>
           <div className="about-grid">
             <div className="about-card">
               <div className="about-icon">🔒</div>

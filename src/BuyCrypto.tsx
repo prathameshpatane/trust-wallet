@@ -54,7 +54,7 @@ function BuyCrypto() {
             <div className="cta-visual">📱</div>
             <div className="cta-text">
               <h2>Download your crypto Wallet today!</h2>
-              <p>Trust Wallet is a secure, self-custody crypto wallet supporting 10M+ assets across 100+ blockchains including crypto. Buy, sell, swap, transfer and earn crypto all in one place. Available for iOS, Android, and desktop browsers.</p>
+              <p>LockChain Wallet is a secure, self-custody crypto wallet supporting 10M+ assets across 100+ blockchains including crypto. Buy, sell, swap, transfer and earn crypto all in one place. Available for iOS, Android, and desktop browsers.</p>
               <button className="btn primary">Download Now</button>
             </div>
           </div>
@@ -84,7 +84,7 @@ function BuyCrypto() {
               <h4>Which cryptocurrencies can I buy directly through the wallet?</h4>
             </div>
             <div className="faq-item">
-              <h4>Does Trust Wallet support crypto withdrawals or crypto-to-fiat solutions?</h4>
+              <h4>Does LockChain Wallet support crypto withdrawals or crypto-to-fiat solutions?</h4>
             </div>
           </div>
         </div>

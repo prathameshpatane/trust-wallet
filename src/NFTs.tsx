@@ -65,7 +65,7 @@ function NFTs() {
       <section className="nfts-marketplaces">
         <div className="section-inner">
           <h2>Access popular NFT marketplaces</h2>
-          <p>Never miss out on the next big thing. Trust Wallet is your secure gateway to connect to top NFT marketplaces.</p>
+          <p>Never miss out on the next big thing. LockChain Wallet is your secure gateway to connect to top NFT marketplaces.</p>
           
           <div className="marketplaces-grid">
             <div className="marketplace-item">
@@ -113,7 +113,7 @@ function NFTs() {
             </div>
             <div className="manage-text">
               <h2>Deposit, manage and explore</h2>
-              <p>Trust Wallet offers you an easy way to keep all your favourite NFTs in one place.</p>
+              <p>LockChain Wallet offers you an easy way to keep all your favourite NFTs in one place.</p>
               <div className="feature-list">
                 <div className="feature-item">
                   <span className="feature-icon">📱</span>

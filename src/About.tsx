@@ -5,7 +5,7 @@ function About() {
     <div className="page-root">
       <section className="about-section">
         <div className="section-inner">
-          <h2>About Trust Wallet</h2>
+          <h2>About LockChain Wallet</h2>
           <div className="about-grid">
             <div className="about-card">
               <div className="about-icon">🛡️</div>
@@ -33,7 +33,7 @@ function About() {
             </div>
             <div className="about-card">
               <div className="about-icon">👥</div>
-              <h3>Trust Squad</h3>
+              <h3>LockChain Squad</h3>
               <p>Lead, Learn & Launch Your Web3 Journey</p>
               <div className="card-highlight">Community-driven Web3 education and growth</div>
             </div>

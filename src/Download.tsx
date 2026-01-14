@@ -5,8 +5,8 @@ function Download() {
     <div className="download-page">
       <div className="download-hero">
         <div className="download-hero-content">
-          <h1>Download Trust Wallet</h1>
-          <p className="download-lead">The Trust Wallet is available as a mobile app and desktop browser extension</p>
+          <h1>Download LockChain Wallet</h1>
+          <p className="download-lead">The LockChain Wallet is available as a mobile app and desktop browser extension</p>
         </div>
       </div>
 

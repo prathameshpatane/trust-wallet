@@ -44,7 +44,7 @@ function AppContent() {
           <div className="header-inner">
             <Link to="/" className="brand">
               <div className="shield" aria-hidden>🔷</div>
-              <span className="brand-text">TRUST</span>
+              <span className="brand-text">LOCKCHAIN</span>
             </Link>
 
             <nav className="main-nav" aria-label="Main navigation">
@@ -249,7 +249,7 @@ function AppContent() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/receive" element={<Receive />} />
           <Route path="/watchlist" element={<Watchlist />} />
-      
+          
         </Routes>
 
         {!hideHeaderFooter && <footer className="site-footer">
